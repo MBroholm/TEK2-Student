@@ -490,7 +490,7 @@ Your mission: **find as many security issues as you can.** Here are things to ch
 
 1. **World-readable secrets:**
    ```bash
-   find / -name "*.env" -o -name "*.key" -o -name ".passwords" 2>/dev/null | xargs ls -la
+   find / \( -name "*.env" -o -name "*.key" -o -name ".passwords" \) 2>/dev/null | xargs ls -la
    ```
 
 2. **World-writable files:**
