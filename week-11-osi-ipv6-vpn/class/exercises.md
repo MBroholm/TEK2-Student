@@ -222,6 +222,7 @@ docker run -d --rm --name ssh-server --network ssh-lab \
   -e USER_NAME=student \
   -e USER_PASSWORD=classpass \
   -e PASSWORD_ACCESS=true \
+  -e DOCKER_MODS=linuxserver/mods:openssh-server-ssh-tunnel \
   linuxserver/openssh-server
 ```
 
