@@ -228,6 +228,7 @@ docker run -d --rm --name ssh-server --network ssh-lab \
 Wait 10 seconds for it to finish starting, then verify:
 
 ```bash
+docker exec ssh-server apk add --no-cache iproute2
 docker exec ssh-server ss -tlnp | grep :2222
 ```
 
