@@ -31,8 +31,10 @@ Compare your answers with a classmate. If you disagree, discuss!
 In a terminal, run a single HTTPS request so your capture has something clear to look at:
 
 ```bash
-curl -s -o /dev/null https://example.com
+curl -s -o NUL https://example.com
 ```
+
+*Note: If you are using a Unix-like terminal (e.g., Git Bash, WSL) you might use `/dev/null` instead of `NUL`.*
 
 Then stop the Wireshark capture (the red stop button).
 
@@ -100,18 +102,24 @@ That's encapsulation — each layer wraps the one above with its own header. Wir
 
 **Goal:** See IPv6 working between containers, and observe link-local addresses in action.
 
-### Part A: Start two Alpine containers
+### Part A: Create an IPv6-enabled network and start two Alpine containers
 
-Open two terminal windows. In the first, start a container named `host-a`:
+First, create a network that has IPv6 enabled. This is often necessary on Docker Desktop to get IPv6 working reliably.
 
 ```bash
-docker run --rm -it --name host-a alpine sh
+docker network create --ipv6 --subnet=fd00:db8::/64 my-ipv6-network
 ```
 
-In the second, start `host-b`:
+Now, open two terminal windows. In the first, start a container named `host-a` connected to this new network:
 
 ```bash
-docker run --rm -it --name host-b alpine sh
+docker run --rm -it --name host-a --network my-ipv6-network alpine sh
+```
+
+In the second, start `host-b` also connected to `my-ipv6-network`:
+
+```bash
+docker run --rm -it --name host-b --network my-ipv6-network alpine sh
 ```
 
 ### Part B: Install networking tools in both
@@ -154,7 +162,7 @@ In `host-a`, ping `host-b`'s link-local address:
 ping6 -c 3 <host-b-linklocal>%eth0
 ```
 
-Replace `<host-b-linklocal>` with the address you wrote down. You should see replies.
+Replace `<host-b-linklocal>` with the address you wrote down, **making sure to omit the `/64` suffix.** Including the `/64` will result in a "Name does not resolve" error as it's not part of the address when pinging a specific host. You should see replies.
 
 ### Part E: Check what happened
 
@@ -167,6 +175,8 @@ ip -6 neigh
 You'll see `host-b`'s address with its MAC — IPv6's equivalent of the ARP table. (In IPv6, this is called **Neighbor Discovery Protocol**, or NDP.)
 
 ### Part F: Global IPv6 in Docker (bonus)
+
+*Note: Enabling global IPv6 for custom Docker networks can be challenging on Docker Desktop for Windows/Mac due to virtualization limitations. This step might not work as expected without advanced Docker daemon configuration (e.g., in `daemon.json`) or might be skipped if you encounter issues.*
 
 By default, Docker doesn't give containers global IPv6 addresses. You can enable it by creating a custom network with an IPv6 subnet. Try this from your host (not inside a container):
 
@@ -393,7 +403,7 @@ docker run -d --rm --name wg-server \
   -v "$(pwd)/server.conf:/etc/wireguard/wg0.conf" \
   -p 51820:51820/udp \
   alpine sh -c "
-    apk add --no-cache wireguard-tools iptables iproute2 &&
+    apk add --no-cache wireguard-go iptables iproute2 &&
     wg-quick up wg0 &&
     tail -f /dev/null
   "
@@ -415,7 +425,7 @@ docker run -d --rm --name wg-client \
   --cap-add NET_ADMIN --cap-add SYS_MODULE \
   -v "$(pwd)/client.conf:/etc/wireguard/wg0.conf" \
   alpine sh -c "
-    apk add --no-cache wireguard-tools iptables iproute2 iputils &&
+    apk add --no-cache wireguard-go iptables iproute2 iputils &&
     wg-quick up wg0 &&
     tail -f /dev/null
   "
