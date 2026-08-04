@@ -516,16 +516,16 @@ For each scenario, decide whether a VPN helps (**Yes** / **No** / **Partially**)
 
 | Scenario | VPN helps? | Reason |
 |----------|-----------|--------|
-| Coffee shop Wi-Fi attacker reading your emails (webmail over HTTPS) | | |
-| Coffee shop Wi-Fi attacker seeing which sites you visited | | |
-| Your ISP selling your browsing history | | |
-| Your ISP throttling Netflix | | |
-| Facebook tracking your activity across the web | | |
-| Your employer's network seeing what you do at work | | |
-| A foreign government blocking a specific website | | |
-| A website recognizing you after you log in | | |
-| The VPN provider logging your activity | | |
-| Someone on the LAN doing ARP spoofing | | |
+| Coffee shop Wi-Fi attacker reading your emails (webmail over HTTPS) | No | HTTPS already encrypts the email content end‑to‑end, so the attacker can’t read it even without a VPN. |
+| Coffee shop Wi-Fi attacker seeing which sites you visited | Yes | A VPN hides your DNS queries and encrypts all traffic metadata from the local network. |
+| Your ISP selling your browsing history | Yes | The VPN prevents the ISP from seeing your destination domains or traffic contents. |
+| Your ISP throttling Netflix | Partially | A VPN can hide that you’re using Netflix, but the ISP can still throttle based on traffic volume or VPN endpoints. |
+| Facebook tracking your activity across the web | No | Facebook tracks you via cookies, pixels, and account identity, which a VPN does not block. |
+| Your employer's network seeing what you do at work | Partially | A VPN hides traffic contents from the employer, but they can still see destinations, timing, and that you’re using a VPN. |
+| A foreign government blocking a specific website | Yes | A VPN tunnels traffic through another country, bypassing local censorship. |
+| A website recognizing you after you log in | No | Logging in ties your activity to your account, making your IP irrelevant. |
+| The VPN provider logging your activity | No | A VPN cannot protect you from itself because it terminates the encrypted tunnel. |
+| Someone on the LAN doing ARP spoofing | Yes | A VPN encrypts all traffic and prevents the attacker from reading or modifying intercepted packets. |
 
 Compare your answers with your partner. Where do you disagree? Why?
 

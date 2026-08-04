@@ -179,11 +179,15 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install ALL dependencies (including devDependencies)
-RUN npm ci
+# Install all dependencies (use npm install to avoid requiring a lockfile)
+RUN npm install
 
 # Copy source code
 COPY . .
+
+# Remove devDependencies so node_modules only contains production deps
+# This keeps the final image smaller when we copy node_modules into production
+RUN npm prune --production || true
 
 # If you had a build step (TypeScript, webpack), it would go here:
 # RUN npm run build
@@ -202,7 +206,8 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY server.js .
 COPY package.json .
 
-# Use non-root user for security
+# Fix ownership so the `node` user can access app files, then switch
+RUN chown -R node:node /app
 USER node
 
 # Document port
@@ -213,6 +218,7 @@ ENV NODE_ENV=production
 
 # Start application
 CMD ["node", "server.js"]
+
 ```
 
 2. Build both versions and compare:
