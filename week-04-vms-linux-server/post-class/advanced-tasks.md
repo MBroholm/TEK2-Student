@@ -117,6 +117,7 @@ docker stop myapp
 ```bash
 sudo certbot certonly --standalone -d myapp.example.com
 ```
+*NOTE*: using --standalone will prevent auto renewal when paired with nginx reverse proxy setup (using port 80). Use nginx plugin ```python3-certbot-nginx``` for configuring renewal.
 
 Follow the prompts:
 - Enter your email
