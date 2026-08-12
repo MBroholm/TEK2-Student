@@ -121,7 +121,7 @@ First, create a short message (RSA can only encrypt small amounts of data direct
 
 ```bash
 echo "Hello, this is encrypted with RSA!" > message.txt
-openssl rsautl -encrypt -pubin -inkey public.pem -in message.txt -out message.enc
+openssl pkeyutl -encrypt -pubin -inkey public.pem -in message.txt -out message.enc
 ```
 
 ### 2.5 Verify it's encrypted
@@ -135,7 +135,7 @@ You should see hex bytes — completely unreadable.
 ### 2.6 Decrypt with the private key
 
 ```bash
-openssl rsautl -decrypt -inkey private.pem -in message.enc -out message.dec
+openssl pkeyutl -decrypt -inkey private.pem -in message.enc -out message.dec
 cat message.dec
 ```
 
@@ -144,7 +144,7 @@ You should see: `Hello, this is encrypted with RSA!`
 ### 2.7 Try decrypting with the public key (it should fail)
 
 ```bash
-openssl rsautl -decrypt -pubin -inkey public.pem -in message.enc
+openssl pkeyutl -decrypt -pubin -inkey public.pem -in message.enc
 ```
 
 This will fail. **Only the private key can decrypt what the public key encrypted.**

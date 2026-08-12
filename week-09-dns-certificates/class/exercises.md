@@ -357,8 +357,8 @@ Apply no filter (or use `ip.addr == <github's IP>`). Look for these packets in o
 4. **TCP SYN-ACK**: Server responds
 5. **TCP ACK**: Handshake complete
 6. **TLS Client Hello**: Start the TLS handshake
-7. **TLS Server Hello + Certificate**: Server sends its certificate
-8. **TLS Key Exchange**: Encryption keys negotiated
+7. **TLS Server Hello + encrypted server handshake messages** (including the certificate)
+8. **TLS 1.3 key exchange** via the Key Share extension
 9. **Application Data**: The encrypted HTTP request and response
 
 **This is everything you've learned since Week 5, in one capture.** DNS → TCP → TLS → HTTP.
@@ -400,18 +400,28 @@ Start two containers on the default network:
 docker run -d --name web1 nginx
 docker run -it --rm alpine sh
 ```
+From the Docker host, find web1's IP:
 
+```bash
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' web1
+```
+
+For example, if it returns 172.17.0.2, then from inside the Alpine container:
 From inside the alpine container, try:
 
 ```bash
 # This will work (direct IP)
-ping -c 2 $(getent hosts web1 | awk '{print $1}') 2>/dev/null || echo "Cannot resolve web1"
+ping -c 2 172.17.0.2
 
 # This will NOT work (name resolution)
 ping -c 2 web1
 ```
 
-DNS name resolution doesn't work on the default bridge network. Exit the container (`exit`).
+The default bridge network allows containers to communicate using
+IP addresses, but does not provide automatic DNS resolution for
+container names.
+
+Exit the container (`exit`).
 
 ### Part B: Custom network — DNS works
 

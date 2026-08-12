@@ -170,17 +170,9 @@ Watch the TTL number decrease with each query. When it hits 0, your resolver wil
 ### Part B: Compare TTLs across sites
 
 ```bash
-dig +short +answer google.com | head -1      # Note the TTL
-dig +short +answer github.com | head -1
-dig +short +answer wikipedia.org | head -1
-```
-
-Wait — `+short` hides the TTL. Use the full format instead:
-
-```bash
-dig google.com A | grep "ANSWER" -A2
-dig github.com A | grep "ANSWER" -A2
-dig wikipedia.org A | grep "ANSWER" -A2
+dig google.com A | grep "ANSWER SECTION" -A2
+dig github.com A | grep "ANSWER SECTION" -A2
+dig wikipedia.org A | grep "ANSWER SECTION" -A2
 ```
 
 Which site has the lowest TTL? Which has the highest? Why might a site choose a very low TTL?
